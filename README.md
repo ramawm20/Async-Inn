@@ -23,5 +23,7 @@
 ### The Layout Enum => 
 + It has the nickname of the room that depends on it . It contains several layouts of the rooms.
 
-
-
+#
+## Lab 13
+### Architecture Pattern: Dependency Injection
++ Dependency Injection (DI) is a design pattern that allows the inversion of control in an application. Instead of creating dependencies within a class, the required objects or services are "injected" into the class from an external source. This external source is typically a container or framework responsible for managing the object creation and lifecycle. In the context of web applications, this pattern is particularly useful when working with controllers and services.

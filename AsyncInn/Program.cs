@@ -1,4 +1,6 @@
  using AsyncInn.Data;
+using AsyncInn.Interfaces;
+using AsyncInn.Services;
 using Microsoft.EntityFrameworkCore;
 
 namespace AsyncInn
@@ -10,6 +12,10 @@ namespace AsyncInn
             var builder = WebApplication.CreateBuilder(args);
 
             builder.Services.AddControllers();
+
+            builder.Services.AddScoped<IHotels,HotelServices>();
+            builder.Services.AddTransient<IRooms, RoomsServices>();
+            builder.Services.AddTransient<IAmenities, AmenitiesServices>();
 
             string connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
             builder.Services.AddDbContext<AsyncInnDbContext>
