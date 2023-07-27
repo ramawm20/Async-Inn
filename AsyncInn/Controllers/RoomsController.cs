@@ -57,7 +57,18 @@ namespace AsyncInn.Controllers
         {
             return Ok(_context.PostRoom(room));
         }
-
+        [HttpPost("{roomId}/Amenity/{amenityId}")]
+        public async Task<ActionResult> AddAmenityToRoom(int roomId, int amenityId)
+        {
+            await _context.AddAmenityToRoom(roomId, amenityId);
+            return Ok();
+        }
+        [HttpDelete("{roomId}/Amenity/{amenityId}")]
+        public async Task<ActionResult> RemoveAmentityFromRoom(int roomId, int amenityId)
+        {
+            await _context.RemoveAmentityFromRoom(roomId, amenityId);
+            return NoContent();
+        }
         // DELETE: api/Rooms/5
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteRoom(int id)
