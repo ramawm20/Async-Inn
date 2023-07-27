@@ -15,5 +15,7 @@
         public string Country { get; set; }
 
         public string Phone { get; set; }
+
+        public List<HotelRoom> hotelRooms { get; set; }
     }
 }

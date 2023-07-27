@@ -66,5 +66,26 @@ namespace AsyncInn.Services
             }
             return false;
         }
+        public async Task AddAmenityToRoom(int roomId, int amenityId)
+        {
+            var rooms = await _context.Rooms
+               .Include(e => e.Amenities)
+               .ToListAsync();
+            var amenity = await _context.Amenities.Where(e => e.Id == amenityId).FirstOrDefaultAsync();
+            var room = rooms.Where(e => e.Id == roomId).FirstOrDefault();
+            room.Amenities.Add(amenity);
+            await _context.SaveChangesAsync();
+
+        }
+        public async Task RemoveAmentityFromRoom(int roomId, int amenityId)
+        {
+            var rooms = await _context.Rooms
+              .Include(e => e.Amenities)
+              .ToListAsync();
+            var amenity = await _context.Amenities.Where(e => e.Id == amenityId).FirstOrDefaultAsync();
+            var room = rooms.Where(e => e.Id == roomId).FirstOrDefault();
+            room.Amenities.Remove(amenity);
+            await _context.SaveChangesAsync();
+        }
     }
 }

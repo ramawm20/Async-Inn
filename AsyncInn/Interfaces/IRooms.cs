@@ -17,7 +17,11 @@ namespace AsyncInn.Interfaces
 
         public bool RoomExists(int id);
 
+        Task AddAmenityToRoom(int roomId, int amenityId);
 
-        
+        Task RemoveAmentityFromRoom(int roomId, int amenityId);
+
+
+
     }
 }
