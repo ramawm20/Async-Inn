@@ -30,8 +30,6 @@ namespace AsyncInn.Services
             var deletedAmenities = await GetAmenities(id);
                 _context.Amenities.Remove(deletedAmenities);
                 await _context.SaveChangesAsync();
-
-            
         }
 
         public async Task<IEnumerable<Amenities>> GetAmenities()
