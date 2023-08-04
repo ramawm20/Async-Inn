@@ -11,7 +11,7 @@ using AsyncInn.Interfaces;
 
 namespace AsyncInn.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/Amenities")]
     [ApiController]
     public class AmenitiesController : ControllerBase
     {
@@ -23,7 +23,8 @@ namespace AsyncInn.Controllers
         }
 
         // GET: api/Amenities
-        [HttpGet]
+
+        [HttpGet ]
         public async Task<ActionResult<IEnumerable<Amenities>>> GetAmenities()
         {
           var Ameninites=await _context.GetAmenities();

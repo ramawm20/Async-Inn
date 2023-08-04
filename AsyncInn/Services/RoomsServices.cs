@@ -33,7 +33,9 @@ namespace AsyncInn.Services
 
         public async Task<IEnumerable<Room>> GetRooms()
         {
-            var Rooms = await _context.Rooms.ToListAsync();
+            var Rooms = await _context.Rooms
+                .Include(r => r.Amenities)
+                .ToListAsync();
             return Rooms;
         }
 
@@ -68,22 +70,22 @@ namespace AsyncInn.Services
         }
         public async Task AddAmenityToRoom(int roomId, int amenityId)
         {
-            var rooms = await _context.Rooms
-               .Include(e => e.Amenities)
-               .ToListAsync();
-            var amenity = await _context.Amenities.Where(e => e.Id == amenityId).FirstOrDefaultAsync();
-            var room = rooms.Where(e => e.Id == roomId).FirstOrDefault();
+
+            var room = await _context.Rooms.Where(r => r.Id == roomId)
+                .Include(a => a.Amenities)
+                .FirstOrDefaultAsync();
+            var amenity = await _context.Amenities.Where(a => a.Id == amenityId).FirstOrDefaultAsync();
             room.Amenities.Add(amenity);
             await _context.SaveChangesAsync();
-
         }
         public async Task RemoveAmentityFromRoom(int roomId, int amenityId)
         {
-            var rooms = await _context.Rooms
-              .Include(e => e.Amenities)
-              .ToListAsync();
-            var amenity = await _context.Amenities.Where(e => e.Id == amenityId).FirstOrDefaultAsync();
-            var room = rooms.Where(e => e.Id == roomId).FirstOrDefault();
+            var room = await _context.Rooms.Where(r => r.Id == roomId)
+                .Include(a => a.Amenities)
+                .FirstOrDefaultAsync();
+
+            var amenity = await _context.Amenities.Where(a => a.Id == amenityId).FirstOrDefaultAsync();
+
             room.Amenities.Remove(amenity);
             await _context.SaveChangesAsync();
         }
