@@ -1,4 +1,5 @@
 ﻿using AsyncInn.Models;
+using AsyncInn.Models.DTOs;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -6,13 +7,13 @@ namespace AsyncInn.Interfaces
 {
     public interface IAmenities
     {
-        public Task<IEnumerable<Amenities>> GetAmenities();
+        public Task<IEnumerable<AmenityDTO>> GetAmenities();
 
-        public Task<Amenities> GetAmenities(int id);
+        public Task<AmenityDTO> GetAmenities(int id);
 
-        public  Task PutAmenities(int id, Amenities amenities);
+        public  Task PutAmenities(int id, AmenityDTO amenities);
     
-        public  Task<Amenities> PostAmenities(Amenities amenities);
+        public  Task<AmenityDTO> PostAmenities(AmenityDTO amenities);
 
         public  Task DeleteAmenities(int id);
 
