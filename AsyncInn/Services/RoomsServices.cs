@@ -1,6 +1,7 @@
 ﻿using AsyncInn.Data;
 using AsyncInn.Interfaces;
 using AsyncInn.Models;
+using AsyncInn.Models.DTOs;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -19,36 +20,70 @@ namespace AsyncInn.Services
             var deletedRoom = await  GetRoom(id);
             if (deletedRoom != null)
             {
-                _context.Rooms.Remove(deletedRoom);
+               // _context.Rooms.Remove(deletedRoom);
                 await _context.SaveChangesAsync();
             }
         }
 
-        public async Task<Room> GetRoom(int id)
+        public async Task<RoomDTO> GetRoom(int id)
         {
-            var room = await _context.Rooms.Where(r => r.Id == id).FirstOrDefaultAsync();
+            var room = await _context.Rooms.Where(r => r.Id == id)
+                .Select(r => new RoomDTO()
+                {
+                    ID=r.Id,
+                    Name=r.Name,
+                    Layout=r.Layout,
+                    Amenities=r.Amenities.Select(a => new AmenityDTO()
+                    {
+                        ID=a.Id,
+                        Name=a.Name
+                    }).ToList()
+                })
+                .FirstOrDefaultAsync();
+
+            
 
             return room;
         }
 
-        public async Task<IEnumerable<Room>> GetRooms()
+        public async Task<IEnumerable<RoomDTO>> GetRooms()
         {
             var Rooms = await _context.Rooms
                 .Include(r => r.Amenities)
+                .Select(r => new RoomDTO()
+                {
+                    ID = r.Id,
+                    Name = r.Name,
+                    Layout = r.Layout,
+                    Amenities = r.Amenities.Select(a => new AmenityDTO()
+                    {
+                        ID = a.Id,
+                        Name = a.Name
+                    }).ToList()
+                })
                 .ToListAsync();
             return Rooms;
         }
 
-        public async Task<Room> PostRoom(Room room)
+        public async Task<RoomDTO> PostRoom(RoomDTO room)
         {
-            
-                _context.Rooms.Add(room);
+
+            var roomToAdd = new Room();
+            roomToAdd.Name=room.Name;
+            roomToAdd.Layout = room.Layout;
+            roomToAdd.Amenities = room.Amenities.Select(a => new Amenities()
+            {
+                Id = a.ID,
+                Name = a.Name
+            }).ToList();
+
+                await _context.Rooms.AddAsync(roomToAdd);
                 await _context.SaveChangesAsync();
                 return room;
             
         }
 
-        public async Task PutRoom(int id, Room room)
+        public async Task PutRoom(int id, RoomDTO room)
         {
             var updatedRoom = await GetRoom(id);
             if (updatedRoom != null)

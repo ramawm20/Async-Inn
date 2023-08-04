@@ -1,17 +1,18 @@
 ﻿using AsyncInn.Models;
+using AsyncInn.Models.DTOs;
 using Microsoft.AspNetCore.Mvc;
 
 namespace AsyncInn.Interfaces
 {
     public interface IHotels
     {
-        public  Task<IEnumerable<Hotel>> GetHotels();
+        public  Task<IEnumerable<HotelDTO>> GetHotels();
 
-        public  Task<Hotel> GetHotel(int id);
+        public  Task<HotelDTO> GetHotel(int id);
 
-        public Task  PutHotel(int id, Hotel hotel);
+        public Task  PutHotel(int id, HotelDTO hotel);
 
-        public Task<Hotel> PostHotel(Hotel hotel);
+        public Task<HotelDTO> PostHotel(HotelDTO hotel);
 
         public  Task  DeleteHotel(int id);
 

@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using AsyncInn.Data;
 using AsyncInn.Models;
 using AsyncInn.Interfaces;
+using AsyncInn.Models.DTOs;
 
 namespace AsyncInn.Controllers
 {
@@ -42,7 +43,7 @@ namespace AsyncInn.Controllers
 
         // GET: api/Hotels
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Hotel>>> GetHotels()
+        public async Task<ActionResult<IEnumerable<HotelDTO>>> GetHotels()
         {
             var hotels = await _context.GetHotels();
             return Ok(hotels);
@@ -50,7 +51,7 @@ namespace AsyncInn.Controllers
 
         // GET: api/Hotels/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<Hotel>> GetHotel(int id)
+        public async Task<ActionResult<HotelDTO>> GetHotel(int id)
         {
             var hotel =await _context.GetHotel(id);
             if (hotel == null)
@@ -63,7 +64,7 @@ namespace AsyncInn.Controllers
         // PUT: api/Hotels/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutHotel(int id, Hotel hotel)
+        public async Task<IActionResult> PutHotel(int id, HotelDTO hotel)
         {
             return Ok(_context.PutHotel(id, hotel));
         }
@@ -71,10 +72,10 @@ namespace AsyncInn.Controllers
         // POST: api/Hotels
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<Hotel>> PostHotel(Hotel hotel)
+        public async Task<ActionResult<HotelDTO>> PostHotel(HotelDTO hotel)
         {
             await _context.PostHotel(hotel);
-            return CreatedAtAction("GetHotel", new { id = hotel.Id }, hotel);
+            return Ok(hotel);
         
         }
         [HttpPost("{hotelId}/rooms")]

@@ -1,6 +1,7 @@
 ﻿using AsyncInn.Data;
 using AsyncInn.Interfaces;
 using AsyncInn.Models;
+using AsyncInn.Models.DTOs;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -20,25 +21,70 @@ namespace AsyncInn.Services
             var deletedHotel = await GetHotel(id);
             if (deletedHotel != null)
             {
-                _context.Hotels.Remove(deletedHotel);
+               // _context.Hotels.Remove(deletedHotel);
                 await _context.SaveChangesAsync();
                
             }
             
         }
 
-        public async Task<Hotel> GetHotel(int id)
+        public async Task<HotelDTO> GetHotel(int id)
         {
-            var hotel= await _context.Hotels.Where(h=>h.Id==id).FirstOrDefaultAsync();
+            var hotel = await _context.Hotels
+        .Where(h => h.Id == id)
+        .Include(h => h.hotelRooms)
+            .ThenInclude(hr => hr.room)
+            .ThenInclude(hrr => hrr.Amenities)
+
+        .Select(h => new HotelDTO
+        {
+            ID = h.Id,
+            Name = h.Name,
+            StreetAddress = h.StreetAdress,
+            City = h.City,
+            State = h.State,
+            Phone = h.Phone,
+            hotelRooms = h.hotelRooms.Select(hr => new HotelRoomDTO
+            {
+                HotelID = hr.HotelId,
+                RoomID = hr.RoomId,
+                RoomNumber = hr.RoomNumber,
+                Rate = hr.Rate,
+                PetFriendly = hr.isPetFriendly,
+                Room = new RoomDTO
+                {
+                    ID = hr.room.Id,
+                    Name = hr.room.Name,
+                    Layout = hr.room.Layout,
+                    Amenities = hr.room.Amenities.Select(a => new AmenityDTO
+                    {
+                        ID = a.Id,
+                        Name = a.Name
+                    }).ToList()
+                }
+            }).ToList()
+        })
+
+                 .FirstOrDefaultAsync();
 
             return hotel;
         }
 
-        public async Task<IEnumerable<Hotel>> GetHotels()
+        public async Task<IEnumerable<HotelDTO>> GetHotels()
         {
-            var Hotels= await _context.Hotels.ToListAsync();
+            var hotels = await _context.Hotels
+             .Select(h => new HotelDTO
+             {
+                 ID = h.Id,
+                 Name = h.Name,
+                 StreetAddress = h.StreetAdress,
+                 City = h.City,
+                 State = h.State,
+                 Phone = h.Phone
+             })
 
-            return Hotels;
+                .ToListAsync();
+            return hotels;
         }
 
         public bool HotelExists(int id)
@@ -51,27 +97,25 @@ namespace AsyncInn.Services
             return false;
         }
 
-        public async Task<Hotel> PostHotel(Hotel hotel)
+        public async Task<HotelDTO> PostHotel(HotelDTO hotel)
         {
-           _context.Hotels.Add(hotel);
+          // _context.Hotels.Add(hotel);
            await _context.SaveChangesAsync();
            return hotel;
         }
 
-        public async Task PutHotel(int id, Hotel hotel)
+        public async Task PutHotel(int id, HotelDTO hotel)
         {
-            var updatedHotel = await GetHotel(id);
-
-            if (updatedHotel != null) 
+            var hotelupdata = await GetHotel(id);
+            if (hotelupdata != null)
             {
-                updatedHotel.State = hotel.State;
-                updatedHotel.StreetAdress = hotel.StreetAdress;
-                updatedHotel.City= hotel.City;
-                updatedHotel.Phone= hotel.Phone;
+                hotelupdata.State = hotel.State;
+                hotelupdata.StreetAddress = hotel.StreetAddress;
+                hotelupdata.City = hotel.City;
+                hotelupdata.Phone = hotel.Phone;
                 await _context.SaveChangesAsync();
-                
             }
-            
+
         }
     }
 }

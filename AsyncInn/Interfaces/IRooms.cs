@@ -1,17 +1,18 @@
 ﻿using AsyncInn.Models;
+using AsyncInn.Models.DTOs;
 using Microsoft.AspNetCore.Mvc;
 
 namespace AsyncInn.Interfaces
 {
     public interface IRooms
     {
-        public  Task<IEnumerable<Room>> GetRooms();
+        public  Task<IEnumerable<RoomDTO>> GetRooms();
 
-        public Task<Room> GetRoom(int id);
+        public Task<RoomDTO> GetRoom(int id);
 
-        public Task PutRoom(int id, Room room);
+        public Task PutRoom(int id, RoomDTO room);
 
-        public Task<Room> PostRoom(Room room);
+        public Task<RoomDTO> PostRoom(RoomDTO room);
 
         public  Task DeleteRoom(int id);
 
