@@ -1,6 +1,7 @@
  using AsyncInn.Data;
 using AsyncInn.Interfaces;
 using AsyncInn.Services;
+using Microsoft.CodeAnalysis.Options;
 using Microsoft.EntityFrameworkCore;
 
 namespace AsyncInn
@@ -25,21 +26,33 @@ namespace AsyncInn
             builder.Services.AddDbContext<AsyncInnDbContext>
                 (options => options.UseSqlServer(connectionString));
 
-            //builder.Services.AddEndpointsApiExplorer();
-            //builder.Services.AddSwaggerGen();
+            builder.Services.AddSwaggerGen(options =>
+            {
+                options.SwaggerDoc("v1", new Microsoft.OpenApi.Models.OpenApiInfo()
+                {
+                    Title = "Async INN Hotel API",
+                    Version = "v1",
+                });
+            }
+            );
+
+           
 
             var app = builder.Build();
-            //Configure the HTTP request pipeline.
-            //if (app.Environment.IsDevelopment())
-            //{
-            //    app.UseSwagger();
-            //    app.UseSwaggerUI();
-            //}
-            //app.UseDeveloperExceptionPage();
 
-            //app.UseHttpsRedirection();
+            app.UseSwagger(options =>
+            {
+                options.RouteTemplate = "/api/{documentName}/swagger.json";
+            }
+            );
+            app.UseSwaggerUI(options =>
+            {
+                options.SwaggerEndpoint("/api/v1/swagger.json", "Async INN Hotel API");
+                options.RoutePrefix = "docs";
+            });
 
-            //app.UseAuthorization();
+
+            
 
 
             app.MapControllers();

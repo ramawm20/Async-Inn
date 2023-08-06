@@ -5,6 +5,11 @@ using Microsoft.EntityFrameworkCore;
 
 namespace AsyncInn.Interfaces
 {
+    /// <summary>
+    /// This interface defines the contract for managing amenities in a hotel.
+    /// It provides methods to retrieve, update, create, and delete amenities.
+    /// </summary>
+    
     public interface IAmenities
     {
         public Task<IEnumerable<AmenityDTO>> GetAmenities();
