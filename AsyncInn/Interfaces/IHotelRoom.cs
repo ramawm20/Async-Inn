@@ -2,6 +2,11 @@
 
 namespace AsyncInn.Interfaces
 {
+    /// <summary>
+    /// This interface defines the contract for managing hotel rooms.
+    /// It provides methods to retrieve, create, update, and delete rooms within a hotel.
+    /// </summary>
+    
     public interface IHotelRoom
     {
         Task<IEnumerable<Room>> getAllRooms(int hotelId);

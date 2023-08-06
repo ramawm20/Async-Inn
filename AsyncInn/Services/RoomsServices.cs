@@ -15,15 +15,27 @@ namespace AsyncInn.Services
         {
             _context = context;
         }
+
+        /// <summary>
+        /// Deletes a room by its ID.
+        /// </summary>
+        /// <param name="id">The ID of the room to delete.</param>
+
         public async Task DeleteRoom(int id)
         {
-            var deletedRoom = await  GetRoom(id);
+            var deletedRoom = await  _context.Rooms.Where(r => r.Id == id).FirstOrDefaultAsync();
             if (deletedRoom != null)
             {
-               // _context.Rooms.Remove(deletedRoom);
+                _context.Rooms.Remove(deletedRoom);
                 await _context.SaveChangesAsync();
             }
         }
+
+        /// <summary>
+        /// Retrieves a specific room by its ID.
+        /// </summary>
+        /// <param name="id">The ID of the room to retrieve.</param>
+        /// <returns>The RoomDTO representing the room with the given ID.</returns>
 
         public async Task<RoomDTO> GetRoom(int id)
         {
@@ -46,6 +58,11 @@ namespace AsyncInn.Services
             return room;
         }
 
+        /// <summary>
+        /// Retrieves a list of all rooms in the hotel.
+        /// </summary>
+        /// <returns>An IEnumerable of RoomDTO representing all rooms.</returns>
+
         public async Task<IEnumerable<RoomDTO>> GetRooms()
         {
             var Rooms = await _context.Rooms
@@ -65,6 +82,12 @@ namespace AsyncInn.Services
             return Rooms;
         }
 
+        /// <summary>
+        /// Creates a new room.
+        /// </summary>
+        /// <param name="room">The information of the new room to create.</param>
+        /// <returns>The newly created RoomDTO representing the newly created room.</returns>
+
         public async Task<RoomDTO> PostRoom(RoomDTO room)
         {
 
@@ -83,16 +106,28 @@ namespace AsyncInn.Services
             
         }
 
+        /// <summary>
+        /// Updates an existing room.
+        /// </summary>
+        /// <param name="id">The ID of the room to update.</param>
+        /// <param name="room">The updated information for the room.</param>
+
         public async Task PutRoom(int id, RoomDTO room)
         {
-            var updatedRoom = await GetRoom(id);
+            var updatedRoom = await _context.Rooms.Where(r => r.Id == id).FirstOrDefaultAsync();
             if (updatedRoom != null)
             {
                 updatedRoom.Name = room.Name;
                 updatedRoom.Layout = room.Layout;
+                await _context.SaveChangesAsync();
             }
         }
 
+        /// <summary>
+        /// Checks if a room with the given ID exists.
+        /// </summary>
+        /// <param name="id">The ID of the room to check.</param>
+        /// <returns>True if a room with the given ID exists; otherwise, false.</returns>
         public bool RoomExists(int id)
         {
             var Room =  GetRoom(id);
@@ -103,6 +138,13 @@ namespace AsyncInn.Services
             }
             return false;
         }
+
+        /// <summary>
+        /// Adds an amenity to a room.
+        /// </summary>
+        /// <param name="roomId">The ID of the room to add the amenity to.</param>
+        /// <param name="amenityId">The ID of the amenity to add to the room.</param>
+
         public async Task AddAmenityToRoom(int roomId, int amenityId)
         {
 
@@ -113,6 +155,13 @@ namespace AsyncInn.Services
             room.Amenities.Add(amenity);
             await _context.SaveChangesAsync();
         }
+
+        /// <summary>
+        /// Removes an amenity from a room.
+        /// </summary>
+        /// <param name="roomId">The ID of the room to remove the amenity from.</param>
+        /// <param name="amenityId">The ID of the amenity to remove from the room.</param>
+
         public async Task RemoveAmentityFromRoom(int roomId, int amenityId)
         {
             var room = await _context.Rooms.Where(r => r.Id == roomId)

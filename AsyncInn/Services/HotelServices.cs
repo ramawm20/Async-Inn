@@ -15,18 +15,30 @@ namespace AsyncInn.Services
         {
             _context = context;
         }
+
+        /// <summary>
+        /// Deletes a hotel by its ID.
+        /// </summary>
+        /// <param name="id">The ID of the hotel to delete.</param>
+
         public async Task DeleteHotel(int id)
         {
            
-            var deletedHotel = await GetHotel(id);
+            var deletedHotel= await _context.Hotels.Where(e => e.Id==id).FirstOrDefaultAsync();
             if (deletedHotel != null)
             {
-               // _context.Hotels.Remove(deletedHotel);
+               
+                _context.Hotels.Remove(deletedHotel);
                 await _context.SaveChangesAsync();
                
             }
             
         }
+        /// <summary>
+        /// Retrieves a specific hotel by its ID.
+        /// </summary>
+        /// <param name="id">The ID of the hotel to retrieve.</param>
+        /// <returns>The HotelDTO representing the hotel with the given ID with it's details.</returns>
 
         public async Task<HotelDTO> GetHotel(int id)
         {
@@ -70,6 +82,11 @@ namespace AsyncInn.Services
             return hotel;
         }
 
+        /// <summary>
+        /// Retrieves a list of all hotels.
+        /// </summary>
+        /// <returns>An IEnumerable of HotelDTO representing all hotels.</returns>
+        
         public async Task<IEnumerable<HotelDTO>> GetHotels()
         {
             var hotels = await _context.Hotels
@@ -87,15 +104,22 @@ namespace AsyncInn.Services
             return hotels;
         }
 
+        /// <summary>
+        /// Checks if a hotel with the given ID exists.
+        /// </summary>
+        /// <param name="id">The ID of the hotel to check.</param>
+        /// <returns>True if a hotel with the given ID exists; otherwise, false.</returns>
+
         public bool HotelExists(int id)
         {
-            var Hotel=GetHotel(id);
-            if (Hotel!=null)
-            {
-                return true;
-            }
-            return false;
+            return _context.Hotels.Any(h => h.Id == id);
         }
+
+        /// <summary>
+        /// Creates a new hotel.
+        /// </summary>
+        /// <param name="hotel">The information of the new hotel to create.</param>
+        /// <returns>The newly created HotelDTO representing the newly created hotel.</returns>
 
         public async Task<HotelDTO> PostHotel(HotelDTO hotel)
         {
@@ -104,7 +128,13 @@ namespace AsyncInn.Services
            return hotel;
         }
 
-        public async Task PutHotel(int id, HotelDTO hotel)
+        /// <summary>
+        /// Updates an existing hotel.
+        /// </summary>
+        /// <param name="id">The ID of the hotel to update.</param>
+        /// <param name="hotel">The updated information for the hotel.</param>
+        /// <returns>The updated HotelDTO representing the hotel after the update.</returns>
+        public async Task<HotelDTO> PutHotel(int id, HotelDTO hotel)
         {
             var hotelupdata = await GetHotel(id);
             if (hotelupdata != null)
@@ -115,6 +145,7 @@ namespace AsyncInn.Services
                 hotelupdata.Phone = hotel.Phone;
                 await _context.SaveChangesAsync();
             }
+            return hotelupdata;
 
         }
     }
