@@ -1,6 +1,7 @@
  using AsyncInn.Data;
 using AsyncInn.Interfaces;
 using AsyncInn.Services;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.CodeAnalysis.Options;
 using Microsoft.EntityFrameworkCore;
 
@@ -17,6 +18,7 @@ namespace AsyncInn
      );
             //Dependency Injection 
             //Add scoped / transient / singelton   => depends on timelife 
+            builder.Services.AddTransient<IUserService,IdentityUserService>();
             builder.Services.AddScoped<IHotels,HotelServices>();
             builder.Services.AddScoped<IHotelRoom, HotelRoomServices>();
             builder.Services.AddTransient<IRooms, RoomsServices>();
@@ -36,7 +38,13 @@ namespace AsyncInn
             }
             );
 
-           
+            builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options =>
+            {
+                options.User.RequireUniqueEmail = true;
+
+            })
+                .AddEntityFrameworkStores<AsyncInnDbContext>();
+
 
             var app = builder.Build();
 
