@@ -2,7 +2,7 @@
 
 ## Rama Maswadeh || 16/7/2023
 ## The ER Diagram for the ASYNC INN Hotel: 
-![ERD](./Hotel_ERD.png)
+![ERD](./ERD.png)
 
 ## Exeplanation :
 ### The Hotel Table =>
@@ -27,3 +27,7 @@
 ## Lab 13
 ### Architecture Pattern: Dependency Injection
 + Dependency Injection (DI) is a design pattern that allows the inversion of control in an application. Instead of creating dependencies within a class, the required objects or services are "injected" into the class from an external source. This external source is typically a container or framework responsible for managing the object creation and lifecycle. In the context of web applications, this pattern is particularly useful when working with controllers and services.
+
+
+## Lab18 
+![Identity](./Identity.png)
