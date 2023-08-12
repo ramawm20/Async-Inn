@@ -1,10 +1,12 @@
 ﻿using AsyncInn.Interfaces;
 using AsyncInn.Models.DTOs;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace AsyncInn.Controllers
 {
+    
     [Route("api/[controller]")]
     [ApiController]
     public class UsersController : ControllerBase
@@ -36,6 +38,15 @@ namespace AsyncInn.Controllers
             }
 
             return Unauthorized();
+        }
+        //Allowed only for the authorized 
+        //[Authorize]
+        [Authorize (Roles ="Manager")]
+
+        [HttpGet("Me")]
+        public async Task<ActionResult<UserDto>> Me()
+        {
+            return await _userService.GetUser(this.User);
         }
 
     }
