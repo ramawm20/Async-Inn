@@ -1,6 +1,7 @@
  using AsyncInn.Data;
 using AsyncInn.Interfaces;
 using AsyncInn.Services;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.CodeAnalysis.Options;
 using Microsoft.EntityFrameworkCore;
@@ -18,6 +19,8 @@ namespace AsyncInn
      );
             //Dependency Injection 
             //Add scoped / transient / singelton   => depends on timelife 
+            //Each time create new one
+            builder.Services.AddScoped<JwtTokenService>();
             builder.Services.AddTransient<IUserService,IdentityUserService>();
             builder.Services.AddScoped<IHotels,HotelServices>();
             builder.Services.AddScoped<IHotelRoom, HotelRoomServices>();
@@ -45,6 +48,26 @@ namespace AsyncInn
             })
                 .AddEntityFrameworkStores<AsyncInnDbContext>();
 
+            builder.Services.AddAuthentication(options =>
+            {
+                options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            })
+  .AddJwtBearer(options =>
+  {
+      // Tell the authenticaion scheme "how/where" to validate the token + secret
+      options.TokenValidationParameters = JwtTokenService.GetValidationParameters(builder.Configuration);
+  });
+
+
+            builder.Services.AddAuthorization(options =>
+            {
+                // Add "Name of Policy", and the Lambda returns a definition
+                options.AddPolicy("create", policy => policy.RequireClaim("permissions", "create"));
+                options.AddPolicy("update", policy => policy.RequireClaim("permissions", "update"));
+                options.AddPolicy("delete", policy => policy.RequireClaim("permissions", "delete"));
+            });
 
             var app = builder.Build();
 
@@ -60,7 +83,8 @@ namespace AsyncInn
             });
 
 
-            
+            app.UseAuthentication();
+            app.UseAuthorization();
 
 
             app.MapControllers();
